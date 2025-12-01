@@ -79,6 +79,30 @@ python3 local/proxy.py
 
 Then access: `http://localhost:8080/search.php?s=Arrabiata`
 
+## Project Structure
+
+```
+themealdb-proxy/
+├── api/
+│   └── proxy.py          ← DEPLOYED to Vercel (production serverless function)
+├── local/
+│   └── proxy.py          ← NOT DEPLOYED (local testing only)
+├── vercel.json           ← DEPLOYED (Vercel configuration/routing)
+├── .vercelignore         ← Excludes local/ from deployment
+└── README.md             ← NOT DEPLOYED (documentation)
+```
+
+### What Gets Deployed vs. What Stays Local
+
+**Deployed to Vercel:**
+- ✅ `api/proxy.py` - The actual Python code that runs in production
+- ✅ `vercel.json` - Configuration that tells Vercel how to route requests
+
+**NOT Deployed (Local Only):**
+- ❌ `local/proxy.py` - For testing on your computer before deploying
+- ❌ `README.md` - Documentation
+- ❌ `.gitignore`, `.vercelignore` - Configuration files
+
 ## How It Works
 
 ### Architecture
@@ -101,7 +125,7 @@ School Network → Vercel Proxy → TheMealDB API
   - Returns the response with CORS headers enabled
 - **Why it works**: Vercel's servers aren't blocked by Cloudflare, and the browser-like headers make the request appear legitimate
 
-#### 2. `vercel.json` - Configuration
+#### 2. `vercel.json` - Configuration (The Router)
 ```json
 {
   "rewrites": [
@@ -109,9 +133,14 @@ School Network → Vercel Proxy → TheMealDB API
   ]
 }
 ```
-- **Purpose**: Routes all `/api/*` requests to the `api/proxy.py` serverless function
-- **How it works**: Vercel uses this file to understand how to handle incoming requests
-- **Result**: Any path like `/api/proxy?s=Arrabiata` gets handled by the Python function
+- **Purpose**: Acts as a routing map - tells Vercel which code to run for which URL
+- **How it works**: 
+  - When someone visits `/api/proxy?s=Arrabiata`
+  - Vercel reads this config and says "run the code in `api/proxy.py`"
+  - Think of it like a phone directory: URL → Python file
+- **Important**: Both `vercel.json` AND `api/proxy.py` get deployed and work together
+  - `vercel.json` = The address book (where to route)
+  - `api/proxy.py` = The worker (what to execute)
 
 #### 3. `local/proxy.py` - Local Server (Optional)
 - **Purpose**: Run the proxy locally for testing or if you prefer self-hosting
