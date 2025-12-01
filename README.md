@@ -74,7 +74,7 @@ https://your-project.vercel.app/api/proxy/search.php?s=Arrabiata
 ## Local Testing
 
 ```bash
-python3 proxy.py
+python3 local/proxy.py
 ```
 
 Then access: `http://localhost:8080/search.php?s=Arrabiata`
@@ -113,10 +113,11 @@ School Network → Vercel Proxy → TheMealDB API
 - **How it works**: Vercel uses this file to understand how to handle incoming requests
 - **Result**: Any path like `/api/proxy?s=Arrabiata` gets handled by the Python function
 
-#### 3. `proxy.py` - Local Server (Optional)
+#### 3. `local/proxy.py` - Local Server (Optional)
 - **Purpose**: Run the proxy locally for testing or if you prefer self-hosting
 - **How it works**: Simple HTTP server on port 8080 that does the same thing as the Vercel function
 - **Use case**: Testing locally before deploying, or running on your own computer
+- **Note**: This file is NOT deployed to Vercel, it's only for local development
 
 ### Why Cloudflare Blocks the Original API
 
